@@ -1,0 +1,182 @@
+{
+  "generated_at": "2026-06-23T05:25:02.6401588+05:30",
+  "suites": [
+    {
+      "Name": "NETCONF Tests",
+      "Protocol": "NETCONF/SSH",
+      "StartTime": "2026-06-23T05:25:02.6361344+05:30",
+      "EndTime": "2026-06-23T05:25:02.6377269+05:30",
+      "Results": [
+        {
+          "Name": "NETCONF: Session Connectivity",
+          "Suite": "NETCONF",
+          "Status": "PASS",
+          "Severity": "CRITICAL",
+          "Duration": 0,
+          "Message": "",
+          "Error": null,
+          "StartTime": "2026-06-23T05:25:02.6361344+05:30",
+          "EndTime": "2026-06-23T05:25:02.6361344+05:30",
+          "Tags": [
+            "netconf",
+            "connectivity",
+            "smoke"
+          ],
+          "Steps": [
+            {
+              "Name": "SSH connect + hello exchange",
+              "Status": "PASS",
+              "Duration": 0,
+              "Detail": "sessionID=42"
+            },
+            {
+              "Name": "has base capability",
+              "Status": "PASS",
+              "Duration": 0,
+              "Detail": "urn:ietf:params:netconf:base ✓"
+            },
+            {
+              "Name": "session ID assigned",
+              "Status": "PASS",
+              "Duration": 0,
+              "Detail": "sessionID=42 ✓"
+            }
+          ],
+          "Attachments": null
+        },
+        {
+          "Name": "NETCONF: get-config (running)",
+          "Suite": "NETCONF",
+          "Status": "PASS",
+          "Severity": "HIGH",
+          "Duration": 0,
+          "Message": "",
+          "Error": null,
+          "StartTime": "2026-06-23T05:25:02.6366851+05:30",
+          "EndTime": "2026-06-23T05:25:02.6366851+05:30",
+          "Tags": [
+            "netconf",
+            "get-config"
+          ],
+          "Steps": [
+            {
+              "Name": "send get-config RPC",
+              "Status": "PASS",
+              "Duration": 0,
+              "Detail": "RPC sent successfully"
+            },
+            {
+              "Name": "reply has OK",
+              "Status": "PASS",
+              "Duration": 0,
+              "Detail": "rpc-reply contains \u003cok/\u003e ✓"
+            },
+            {
+              "Name": "no RPC errors",
+              "Status": "PASS",
+              "Duration": 0,
+              "Detail": "0 errors returned ✓"
+            },
+            {
+              "Name": "data contains interface",
+              "Status": "PASS",
+              "Duration": 0,
+              "Detail": "contains \"interface\" ✓"
+            }
+          ],
+          "Attachments": null
+        },
+        {
+          "Name": "NETCONF: edit-config + commit",
+          "Suite": "NETCONF",
+          "Status": "PASS",
+          "Severity": "HIGH",
+          "Duration": 0,
+          "Message": "",
+          "Error": null,
+          "StartTime": "2026-06-23T05:25:02.6366851+05:30",
+          "EndTime": "2026-06-23T05:25:02.6366851+05:30",
+          "Tags": [
+            "netconf",
+            "edit-config",
+            "commit"
+          ],
+          "Steps": [
+            {
+              "Name": "lock candidate",
+              "Status": "PASS",
+              "Duration": 0,
+              "Detail": "lock OK ✓"
+            },
+            {
+              "Name": "edit-config OK",
+              "Status": "PASS",
+              "Duration": 0,
+              "Detail": "edit OK ✓"
+            },
+            {
+              "Name": "commit OK",
+              "Status": "PASS",
+              "Duration": 0,
+              "Detail": "commit OK ✓"
+            },
+            {
+              "Name": "unlock candidate",
+              "Status": "PASS",
+              "Duration": 0,
+              "Detail": "unlock OK ✓"
+            },
+            {
+              "Name": "lock → edit → commit → unlock",
+              "Status": "PASS",
+              "Duration": 0,
+              "Detail": "full edit-config lifecycle completed"
+            }
+          ],
+          "Attachments": null
+        },
+        {
+          "Name": "NETCONF: Capability Negotiation",
+          "Suite": "NETCONF",
+          "Status": "PASS",
+          "Severity": "MEDIUM",
+          "Duration": 0,
+          "Message": "",
+          "Error": null,
+          "StartTime": "2026-06-23T05:25:02.6366851+05:30",
+          "EndTime": "2026-06-23T05:25:02.6366851+05:30",
+          "Tags": [
+            "netconf",
+            "capability"
+          ],
+          "Steps": [
+            {
+              "Name": "capability: base:1.0",
+              "Status": "PASS",
+              "Duration": 0,
+              "Detail": "advertised by remote ✓"
+            },
+            {
+              "Name": "capability: candidate:1.0",
+              "Status": "PASS",
+              "Duration": 0,
+              "Detail": "advertised by remote ✓"
+            },
+            {
+              "Name": "capability: rollback-on-error",
+              "Status": "PASS",
+              "Duration": 0,
+              "Detail": "advertised by remote ✓"
+            }
+          ],
+          "Attachments": null
+        }
+      ],
+      "Tags": [
+        "netconf",
+        "connectivity",
+        "smoke"
+      ]
+    }
+  ]
+}

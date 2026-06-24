@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test Results Report</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 0; padding: 0; background: #f5f7fb; color: #111; }
+    header { background: #1f2937; color: white; padding: 1rem 1.5rem; }
+    h1 { margin: 0; font-size: clamp(1.5rem, 2vw, 2.25rem); }
+    main { padding: 1.5rem; max-width: 1200px; margin: auto; }
+    .metadata, .suite { background: white; border-radius: 0.75rem; box-shadow: 0 10px 30px rgba(15,23,42,.08); margin-bottom: 1rem; padding: 1rem; }
+    .suite-header { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: baseline; }
+    .badge { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.35rem 0.75rem; border-radius: 999px; background: #eef2ff; color: #3730a3; font-size: 0.9rem; }
+    .status-pass { color: #047857; }
+    .status-fail { color: #b91c1c; }
+    .status-skip { color: #9ca3af; }
+    .test-card { border-top: 1px solid #e5e7eb; padding: 1rem 0; }
+    .test-card:first-child { padding-top: 0; }
+    .test-name { margin: 0; font-size: 1.05rem; }
+    .test-info { display: flex; flex-wrap: wrap; gap: 0.75rem; font-size: 0.92rem; color: #6b7280; margin: 0.35rem 0 0.75rem; }
+    .steps { margin: 0; padding-left: 1rem; }
+    .step { margin-bottom: 0.75rem; }
+    .step-name { font-weight: 600; margin: 0 0 0.2rem; }
+    .step-detail { margin: 0; color: #374151; }
+    .error { color: #b91c1c; font-weight: 600; }
+    .footer { text-align: center; padding: 1rem; color: #6b7280; font-size: 0.9rem; }
+    .loading { text-align: center; padding: 4rem 0; color: #4b5563; }
+    @media (max-width: 720px) { main { padding: 1rem; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Test Results Report</h1>
+  </header>
+  <main id="app">
+    <div class="loading">Loading report…</div>
+  </main>
+  <footer class="footer">Open this page from the same folder as <code>results.json</code> using a local file server.</footer>
+  <script>
+    const app = document.getElementById('app');
+
+    function statusClass(status) {
+      if (!status) return '';
+      const s = status.toLowerCase();
+      if (s === 'pass' || s === 'passed' || s === 'success') return 'status-pass';
+      if (s === 'fail' || s === 'failed' || s === 'error') return 'status-fail';
+      return 'status-skip';
+    }
+
+    function formatDate(value) {
+      try {
+        return new Date(value).toLocaleString();
+      } catch (err) {
+        return value || '-';
+      }
+    }
+
+    function safeText(value) {
+      return String(value ?? '');
+    }
+
+    function render() {
+      fetch('results.json')
+        .then(response => {
+          if (!response.ok) throw new Error('Unable to load results.json');
+          return response.json();
+        })
+        .then(data => {
+          if (!data || !data.suites) throw new Error('Invalid report format');
+
+          const suitesHtml = data.suites.map(suite => {
+            const testsHtml = (suite.Results || []).map(test => {
+              const status = safeText(test.Status);
+              const steps = (test.Steps || []).map(step => `
+                <li class="step">
+                  <p class="step-name">${safeText(step.Name)} <span class="badge ${statusClass(step.Status)}">${safeText(step.Status)}</span></p>
+                  <p class="step-detail">${safeText(step.Detail)}</p>
+                </li>
+              `).join('');
+
+              return `
+                <section class="test-card">
+                  <h2 class="test-name">${safeText(test.Name)}</h2>
+                  <p class="test-info">
+                    <span class="badge ${statusClass(status)}">${status}</span>
+                    <span>Severity: ${safeText(test.Severity)}</span>
+                    <span>Duration: ${safeText(test.Duration)}ms</span>
+                    <span>Start: ${formatDate(test.StartTime)}</span>
+                    <span>End: ${formatDate(test.EndTime)}</span>
+                  </p>
+                  ${test.Error ? `<p class="error">Error: ${safeText(test.Error)}</p>` : ''}
+                  ${test.Message ? `<p>${safeText(test.Message)}</p>` : ''}
+                  ${steps ? `<ol class="steps">${steps}</ol>` : '<p>No steps recorded.</p>'}
+                </section>
+              `;
+            }).join('');
+
+            return `
+              <article class="suite">
+                <div class="suite-header">
+                  <div>
+                    <h2>${safeText(suite.Name)}</h2>
+                    <p>${safeText(suite.Protocol)}</p>
+                  </div>
+                  <span class="badge">${safeText((suite.Results || []).length)} tests</span>
+                </div>
+                ${testsHtml}
+              </article>
+            `;
+          }).join('');
+
+          app.innerHTML = `
+            <section class="metadata">
+              <p>Generated at: <strong>${formatDate(data.generated_at)}</strong></p>
+            </section>
+            ${suitesHtml}
+          `;
+        })
+        .catch(error => {
+          app.innerHTML = `<div class="loading">${error.message}</div>`;
+        });
+    }
+
+    render();
+  </script>
+</body>
+</html>

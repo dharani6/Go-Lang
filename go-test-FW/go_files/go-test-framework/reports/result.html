@@ -1,0 +1,5 @@
+fetch('results.json')
+  .then(r => r.json())
+  .then(data => {
+    document.body.innerText = JSON.stringify(data, null, 2);
+  });
